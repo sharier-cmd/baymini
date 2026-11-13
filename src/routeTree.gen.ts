@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HealthPlanRouteImport } from './routes/health-plan'
+import { Route as SymptomsCheckerRouteImport } from './routes/symptoms-checker'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HealthPlanRoute = HealthPlanRouteImport.update({
+  id: '/health-plan',
+  path: '/health-plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SymptomsCheckerRoute = SymptomsCheckerRouteImport.update({
+  id: '/symptoms-checker',
+  path: '/symptoms-checker',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/health-plan': typeof HealthPlanRoute
+  '/symptoms-checker': typeof SymptomsCheckerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/health-plan': typeof HealthPlanRoute
+  '/symptoms-checker': typeof SymptomsCheckerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/health-plan': typeof HealthPlanRoute
+  '/symptoms-checker': typeof SymptomsCheckerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/health-plan' | '/symptoms-checker'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/health-plan' | '/symptoms-checker'
+  id: '__root__' | '/' | '/health-plan' | '/symptoms-checker'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HealthPlanRoute: typeof HealthPlanRoute
+  SymptomsCheckerRoute: typeof SymptomsCheckerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/health-plan': {
+      id: '/health-plan'
+      path: '/health-plan'
+      fullPath: '/health-plan'
+      preLoaderRoute: typeof HealthPlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/symptoms-checker': {
+      id: '/symptoms-checker'
+      path: '/symptoms-checker'
+      fullPath: '/symptoms-checker'
+      preLoaderRoute: typeof SymptomsCheckerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HealthPlanRoute: HealthPlanRoute,
+  SymptomsCheckerRoute: SymptomsCheckerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

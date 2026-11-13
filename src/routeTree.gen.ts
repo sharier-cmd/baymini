@@ -10,12 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as HealthPlanRouteImport } from './routes/health-plan'
+import { Route as MedicalDisclaimerRouteImport } from './routes/medical-disclaimer'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SymptomsCheckerRouteImport } from './routes/symptoms-checker'
+import { Route as TakeDocsAdviceRouteImport } from './routes/take-docs-advice'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HealthPlanRoute = HealthPlanRouteImport.update({
@@ -23,40 +32,93 @@ const HealthPlanRoute = HealthPlanRouteImport.update({
   path: '/health-plan',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MedicalDisclaimerRoute = MedicalDisclaimerRouteImport.update({
+  id: '/medical-disclaimer',
+  path: '/medical-disclaimer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SymptomsCheckerRoute = SymptomsCheckerRouteImport.update({
   id: '/symptoms-checker',
   path: '/symptoms-checker',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TakeDocsAdviceRoute = TakeDocsAdviceRouteImport.update({
+  id: '/take-docs-advice',
+  path: '/take-docs-advice',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/health-plan': typeof HealthPlanRoute
+  '/medical-disclaimer': typeof MedicalDisclaimerRoute
+  '/privacy': typeof PrivacyRoute
   '/symptoms-checker': typeof SymptomsCheckerRoute
+  '/take-docs-advice': typeof TakeDocsAdviceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/health-plan': typeof HealthPlanRoute
+  '/medical-disclaimer': typeof MedicalDisclaimerRoute
+  '/privacy': typeof PrivacyRoute
   '/symptoms-checker': typeof SymptomsCheckerRoute
+  '/take-docs-advice': typeof TakeDocsAdviceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/health-plan': typeof HealthPlanRoute
+  '/medical-disclaimer': typeof MedicalDisclaimerRoute
+  '/privacy': typeof PrivacyRoute
   '/symptoms-checker': typeof SymptomsCheckerRoute
+  '/take-docs-advice': typeof TakeDocsAdviceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/health-plan' | '/symptoms-checker'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/health-plan'
+    | '/medical-disclaimer'
+    | '/privacy'
+    | '/symptoms-checker'
+    | '/take-docs-advice'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/health-plan' | '/symptoms-checker'
-  id: '__root__' | '/' | '/health-plan' | '/symptoms-checker'
+  to:
+    | '/'
+    | '/about'
+    | '/health-plan'
+    | '/medical-disclaimer'
+    | '/privacy'
+    | '/symptoms-checker'
+    | '/take-docs-advice'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/health-plan'
+    | '/medical-disclaimer'
+    | '/privacy'
+    | '/symptoms-checker'
+    | '/take-docs-advice'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   HealthPlanRoute: typeof HealthPlanRoute
+  MedicalDisclaimerRoute: typeof MedicalDisclaimerRoute
+  PrivacyRoute: typeof PrivacyRoute
   SymptomsCheckerRoute: typeof SymptomsCheckerRoute
+  TakeDocsAdviceRoute: typeof TakeDocsAdviceRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,11 +130,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/health-plan': {
       id: '/health-plan'
       path: '/health-plan'
       fullPath: '/health-plan'
       preLoaderRoute: typeof HealthPlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/medical-disclaimer': {
+      id: '/medical-disclaimer'
+      path: '/medical-disclaimer'
+      fullPath: '/medical-disclaimer'
+      preLoaderRoute: typeof MedicalDisclaimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/symptoms-checker': {
@@ -82,13 +165,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SymptomsCheckerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/take-docs-advice': {
+      id: '/take-docs-advice'
+      path: '/take-docs-advice'
+      fullPath: '/take-docs-advice'
+      preLoaderRoute: typeof TakeDocsAdviceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   HealthPlanRoute: HealthPlanRoute,
+  MedicalDisclaimerRoute: MedicalDisclaimerRoute,
+  PrivacyRoute: PrivacyRoute,
   SymptomsCheckerRoute: SymptomsCheckerRoute,
+  TakeDocsAdviceRoute: TakeDocsAdviceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

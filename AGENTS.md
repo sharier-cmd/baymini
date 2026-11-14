@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- AI features call Google Gemini directly from server-only code (`src/lib/ai.server.ts`) using the `GEMINI_API_KEY` secret, at the owner's request (gemini-2.5-flash first, falling back to a current Flash model when Google returns 404); never call Gemini or read the key from browser code.
+- Emergency warnings are decided client-side (`src/lib/emergency.ts`) before any AI call and re-checked on the server; AI output never downgrades them.

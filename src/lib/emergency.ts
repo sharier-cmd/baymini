@@ -40,8 +40,22 @@ export function detectEmergencyText(text: string): string[] {
   return [...reasons];
 }
 
-export function assessEmergency(input: { signs: readonly string[]; texts: readonly string[] }) {
-  const reasons: string[] = [];
+/**
+ * Selected symptoms that are serious enough to show the emergency warning
+ * straight away, before any AI call.
+ */
+export const SEVERE_SYMPTOMS = ["Chest discomfort", "Shortness of breath"] as const;
+
+export function severeSymptomsIn(symptoms: readonly string[]): string[] {
+  return SEVERE_SYMPTOMS.filter((s) => symptoms.includes(s));
+}
+
+export function assessEmergency(input: {
+  signs: readonly string[];
+  texts: readonly string[];
+  symptoms?: readonly string[];
+}) {
+  const reasons: string[] = [...severeSymptomsIn(input.symptoms ?? [])];
   for (const id of input.signs) {
     const sign = EMERGENCY_SIGNS.find((s) => s.id === id);
     if (sign) reasons.push(sign.label);

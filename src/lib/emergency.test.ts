@@ -28,6 +28,18 @@ describe("emergency detection", () => {
     expect(assessEmergency({ signs: [], texts: ["I want to end my life"] }).isEmergency).toBe(true);
   });
 
+  it("flags chest discomfort selected as a symptom", () => {
+    expect(assessEmergency({ signs: [], texts: [], symptoms: ["Chest discomfort"] }).isEmergency).toBe(true);
+  });
+
+  it("flags shortness of breath selected as a symptom", () => {
+    expect(assessEmergency({ signs: [], texts: [], symptoms: ["Shortness of breath"] }).isEmergency).toBe(true);
+  });
+
+  it("does not flag a mild selected symptom such as headache", () => {
+    expect(assessEmergency({ signs: [], texts: [], symptoms: ["Headache", "Fever"] }).isEmergency).toBe(false);
+  });
+
   it("does not flag a common mild symptom description", () => {
     expect(assessEmergency({ signs: [], texts: ["mild headache and a runny nose for two days"] }).isEmergency).toBe(false);
   });

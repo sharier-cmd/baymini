@@ -18,8 +18,8 @@ const BASE_RULES = `You are Baymini, a cautious AI health information assistant.
 
 const FOLLOW_UP_PROMPT = `${BASE_RULES}
 
-Task: write 4 to 7 follow-up questions that help understand the user's reported symptoms.
-- Cover only what is relevant: duration, severity, getting better or worse, associated symptoms specific to what they reported, relevant medical history, age or pregnancy only where clinically relevant.
+Task: write exactly 3 targeted follow-up questions that help understand the user's reported symptoms.
+- Pick the 3 questions that matter most for the specific symptoms they selected (for example duration, severity, associated symptoms specific to what they reported, relevant history). Do not ask generic questions that ignore their symptoms.
 - Prefer "single_choice" or "multiple_choice" with 2-6 short options. Use "short_text" sparingly (options must be an empty array for short_text).
 - ids are short snake_case.
 - Set emergency.isEmergency true only if what they already reported suggests a possible emergency (e.g. severe chest pain, severe breathing difficulty, stroke signs, loss of consciousness); give a one-sentence reason. Otherwise false with an empty reason.`;
@@ -52,6 +52,11 @@ export const getFollowUpQuestions = createServerFn({ method: "POST" })
       system: FOLLOW_UP_PROMPT,
       user: intakeText(data),
       validator: followUpSchema,
+      // Keep exactly three questions even if the model returns extra.
+      transform: (raw) => {
+        const r = raw as { questions?: unknown[] };
+        return Array.isArray(r?.questions) ? { ...r, questions: r.questions.slice(0, 3) } : raw;
+      },
     });
   });
 
@@ -71,6 +76,7 @@ export const getSymptomAssessment = createServerFn({ method: "POST" })
     // Server-side safety net: emergency language always forces the emergency level.
     const red = assessEmergency({
       signs: [],
+      symptoms: data.intake.symptoms,
       texts: [data.intake.description, ...data.answers.map((a) => a.answer)],
     });
     if (result.ok && red.isEmergency && result.data.urgency !== "emergency") {

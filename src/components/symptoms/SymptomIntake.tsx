@@ -4,7 +4,7 @@ import { Field } from "@/components/form/Field";
 import { OptionTile } from "@/components/form/OptionTile";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { EMERGENCY_SIGNS } from "@/lib/emergency";
+import { EMERGENCY_SIGNS, severeSymptomsIn } from "@/lib/emergency";
 import { SYMPTOMS } from "@/lib/symptoms.schema";
 
 import { EmergencyPanel } from "./EmergencyPanel";
@@ -32,6 +32,7 @@ export function SymptomIntake({
 }) {
   const signLabels = EMERGENCY_SIGNS.filter((s) => value.emergencySigns.includes(s.id)).map((s) => s.label);
   const hasEmergency = signLabels.length > 0;
+  const severe = severeSymptomsIn(value.symptoms);
 
   return (
     <div className="space-y-6">
@@ -89,6 +90,16 @@ export function SymptomIntake({
           />
         </Field>
       </section>
+
+      {severe.length > 0 && !hasEmergency ? (
+        <div className="space-y-2">
+          <EmergencyPanel reasons={severe} />
+          <p className="px-2 font-body text-sm text-muted-foreground">
+            If this is severe, sudden or getting worse, get emergency help now. If it is mild and you
+            feel safe, you can continue below.
+          </p>
+        </div>
+      ) : null}
 
       <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
         <Button size="lg" onClick={onContinue} disabled={hasEmergency}>

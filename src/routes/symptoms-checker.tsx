@@ -11,7 +11,7 @@ import { EmergencyPanel } from "@/components/symptoms/EmergencyPanel";
 import { FollowUpForm, type Answers } from "@/components/symptoms/FollowUpForm";
 import { SymptomIntake, type IntakeState } from "@/components/symptoms/SymptomIntake";
 import type { AiErrorCode } from "@/lib/ai-result";
-import { assessEmergency } from "@/lib/emergency";
+import { assessEmergency, severeSymptomsIn } from "@/lib/emergency";
 import { SAMPLE_ASSESSMENT, SAMPLE_FOLLOW_UP } from "@/lib/sample-data";
 import { getFollowUpQuestions, getSymptomAssessment } from "@/lib/symptoms.functions";
 import { symptomIntakeSchema, type Assessment, type FollowUp, type SymptomIntake as Intake } from "@/lib/symptoms.schema";
@@ -52,6 +52,7 @@ function SymptomsPage() {
   const [step, setStep] = useState<Step>({ kind: "intake" });
   const [isSample, setIsSample] = useState(false);
   const [answerRedFlags, setAnswerRedFlags] = useState<string[]>([]);
+  const severe = severeSymptomsIn(intake.symptoms);
   const fetchQuestions = useServerFn(getFollowUpQuestions);
   const fetchAssessment = useServerFn(getSymptomAssessment);
 
@@ -182,6 +183,8 @@ function SymptomsPage() {
         ) : null}
 
         {step.kind === "loading-questions" ? (
+          <div className="space-y-5">
+          {severe.length > 0 ? <EmergencyPanel reasons={severe} compact /> : null}
           <GeneratingScreen
             title="Preparing your questions"
             stages={[
@@ -189,12 +192,16 @@ function SymptomsPage() {
               { label: "Baymini AI is choosing relevant questions", state: "active" },
             ]}
           />
+          </div>
         ) : null}
 
         {step.kind === "questions" ? (
           <div className="space-y-5">
-            {step.followUp.emergency.isEmergency ? (
-              <EmergencyPanel reasons={step.followUp.emergency.reason ? [step.followUp.emergency.reason] : []} compact />
+            {step.followUp.emergency.isEmergency || severe.length > 0 ? (
+              <EmergencyPanel
+                reasons={[...severe, ...(step.followUp.emergency.reason ? [step.followUp.emergency.reason] : [])]}
+                compact
+              />
             ) : null}
             <FollowUpForm
               questions={step.followUp.questions}
@@ -208,7 +215,9 @@ function SymptomsPage() {
 
         {step.kind === "loading-result" ? (
           <div className="space-y-5">
-            {answerRedFlags.length > 0 ? <EmergencyPanel reasons={answerRedFlags} /> : null}
+            {answerRedFlags.length > 0 || severe.length > 0 ? (
+              <EmergencyPanel reasons={[...severe, ...answerRedFlags]} />
+            ) : null}
             <GeneratingScreen
               title="Reviewing your answers"
               stages={[
@@ -221,8 +230,8 @@ function SymptomsPage() {
 
         {step.kind === "result" ? (
           <div className="space-y-5">
-            {answerRedFlags.length > 0 || step.assessment.urgency === "emergency" ? (
-              <EmergencyPanel reasons={answerRedFlags} />
+            {answerRedFlags.length > 0 || severe.length > 0 || step.assessment.urgency === "emergency" ? (
+              <EmergencyPanel reasons={[...severe, ...answerRedFlags]} />
             ) : null}
             <AssessmentView
               assessment={step.assessment}

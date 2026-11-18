@@ -65,3 +65,26 @@ export function assessEmergency(input: {
   }
   return { isEmergency: reasons.length > 0, reasons };
 }
+
+/**
+ * Wider net for free-text chat: plain mentions of chest pain or breathing
+ * difficulty always trigger urgent-care guidance, on top of the severe
+ * patterns used elsewhere.
+ */
+const CHAT_PATTERNS: { pattern: RegExp; reason: string }[] = [
+  { pattern: /\bchest\s+(pain|pressure|tightness|discomfort|hurts?)/i, reason: "Chest pain or discomfort" },
+  { pattern: /\b(pain|tightness|pressure)\s+in\s+(my\s+)?chest/i, reason: "Chest pain or discomfort" },
+  {
+    pattern: /\b(difficulty|trouble|struggling|hard|hard time)\s+(to\s+)?breath(e|ing)\b/i,
+    reason: "Difficulty breathing",
+  },
+  { pattern: /\b(short(ness)?\s+of\s+breath|breathless)/i, reason: "Difficulty breathing" },
+];
+
+export function detectChatEmergency(text: string): string[] {
+  const reasons = new Set(detectEmergencyText(text));
+  for (const { pattern, reason } of CHAT_PATTERNS) {
+    if (pattern.test(text)) reasons.add(reason);
+  }
+  return [...reasons];
+}

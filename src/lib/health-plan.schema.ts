@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const GENDERS = ["Female", "Male", "Non-binary", "Prefer not to say"] as const;
+export const GENDERS = ["Male", "Female", "Prefer not to say"] as const;
 export const ACTIVITY_LEVELS = [
   "Sedentary (mostly sitting)",
   "Lightly active",

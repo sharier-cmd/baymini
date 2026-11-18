@@ -290,6 +290,42 @@
   animation: fade-up 420ms ease-out both;
 }
 
+/* Baymini mascot: gentle floating, blinking eyes, waving hand */
+@keyframes mascot-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes mascot-blink {
+  0%, 91%, 100% { transform: scaleY(1); }
+  94% { transform: scaleY(0.12); }
+}
+
+@keyframes mascot-wave {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-14deg); }
+}
+
+.mascot-float {
+  animation: mascot-float 3.2s ease-in-out infinite;
+}
+
+.mascot-blink {
+  animation: mascot-blink 4.4s ease-in-out infinite;
+}
+
+.mascot-wave {
+  animation: mascot-wave 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-float,
+  .mascot-blink,
+  .mascot-wave {
+    animation: none;
+  }
+}
+
 @media print {
   .no-print { display: none !important; }
   body { background: white; color: black; }

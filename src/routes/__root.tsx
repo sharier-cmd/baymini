@@ -11,6 +11,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { MascotWidget } from "@/components/site/MascotWidget";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { themeInitScript } from "@/components/site/ThemeToggle";
@@ -139,6 +140,7 @@ function RootComponent() {
         </main>
         <SiteFooter />
       </div>
+      <MascotWidget />
       <Toaster position="top-center" />
     </QueryClientProvider>
   );
